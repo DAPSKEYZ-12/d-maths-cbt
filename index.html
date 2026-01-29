@@ -268,11 +268,13 @@ function finish() {
     const finalScore = `${score}/20`;
 
     // CONFIGURATION
-    const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
-    const nameE = "entry.893693042";  
-    const phoneE = "entry.820190378"; 
-    const scoreE = "entry.685141788"; 
-    const reportE = "entry.365371422";
+    // CONFIGURATION - Extracted from your pre-filled link
+const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
+const nameE = "entry.893693042";    // For NAME
+const emailE = "entry.1750619793";  // For EMAIL
+const phoneE = "entry.820190378";   // For PHONE
+const scoreE = "entry.685141788";   // For SCORE
+const reportE = "entry.365371422";  // For REPORTS (Weakness/Missed Questions)
 
     const googleURL = `https://docs.google.com/forms/d/e/${formID}/formResponse?${nameE}=${encodeURIComponent(name)}&${phoneE}=${encodeURIComponent(phone)}&${scoreE}=${encodeURIComponent(finalScore)}&${reportE}=${encodeURIComponent(report)}&submit=Submit`;
 
