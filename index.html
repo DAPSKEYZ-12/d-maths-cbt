@@ -1,240 +1,244 @@
                      
-     <!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-MATHS | Diagnostic CBT</title>
+    <title>D-MATHS | Logic. Code. Future.</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --deep-blue: #16407B;
-            --vibrant-orange: #F38118;
-            --soft-cream: #EAE3D2;
-            --white: #ffffff;
-            --dark-text: #2c3e50;
+            --deep-blue: #0f172a;
+            --accent-blue: #2563eb;
+            --vibrant-orange: #f97316;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #1e293b;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
         body {
-            background-color: var(--soft-cream);
-            color: var(--dark-text);
-            padding: 15px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
-        .cbt-container {
-            background: var(--white);
-            max-width: 600px;
+        /* Glassmorphism Container */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 100%;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(22, 64, 123, 0.15);
-            border-top: 10px solid var(--deep-blue);
-        }
-
-        .header { text-align: center; margin-bottom: 25px; }
-        .logo { color: var(--deep-blue); font-weight: 800; font-size: 28px; letter-spacing: 1px; }
-        
-        .progress-container {
-            width: 100%;
-            background: #eee;
-            height: 8px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            max-width: 550px;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
             overflow: hidden;
         }
-        .progress-fill {
-            height: 100%;
-            background: var(--vibrant-orange);
-            width: 0%;
-            transition: width 0.4s ease;
+
+        /* Countdown Grid */
+        .countdown-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        .timer-bar {
-            background: var(--deep-blue);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
+        .timer-box {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
         }
 
-        .question-text { font-size: 19px; font-weight: 600; margin-bottom: 20px; color: var(--deep-blue); }
+        .timer-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .timer-val { font-size: 16px; font-weight: 700; color: var(--accent-blue); font-variant-numeric: tabular-nums; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo { font-size: 32px; font-weight: 900; color: var(--deep-blue); letter-spacing: -1px; }
+        .logo span { color: var(--vibrant-orange); }
+
+        /* Input Styling */
+        input {
+            width: 100%; padding: 16px; margin-bottom: 12px;
+            border: 2px solid #e2e8f0; border-radius: 12px;
+            font-size: 16px; transition: 0.3s;
+        }
+        input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        /* Progress & Options */
+        .timer-bar { background: var(--deep-blue); color: white; padding: 12px; border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 20px; }
+        .progress-container { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--vibrant-orange); width: 0%; transition: 0.4s; }
 
         .option {
-            background: #f9f9f9;
-            border: 2px solid #edf2f7;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.2s;
+            background: white; border: 2px solid #e2e8f0; padding: 18px;
+            margin-bottom: 12px; border-radius: 14px; cursor: pointer;
+            font-weight: 500; transition: 0.2s;
         }
+        .option:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+        .option.selected { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
 
-        .option:hover { border-color: var(--vibrant-orange); }
-        .option.selected { 
-            border-color: var(--vibrant-orange); 
-            background: var(--vibrant-orange); 
-            color: white;
-        }
-
-        .nav-btns { display: flex; justify-content: space-between; margin-top: 30px; gap: 10px; }
-        
+        /* Buttons */
         button {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
+            width: 100%; padding: 16px; border: none; border-radius: 12px;
+            font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
         }
-
-        .btn-primary { background: var(--deep-blue); color: white; width: 100%; }
-        .btn-nav { background: var(--deep-blue); color: white; flex: 2; }
-        .btn-secondary { background: #e2e8f0; color: #64748b; flex: 1; }
-
-        #result-screen, #quiz-screen { display: none; }
+        .btn-primary { background: var(--accent-blue); color: white; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
         
-        input {
-            width: 100%; padding: 15px; margin: 12px 0; border: 2px solid #edf2f7; border-radius: 10px; font-size: 16px;
-        }
+        #result-screen, #quiz-screen { display: none; }
 
         .success-btn {
-            background: #25D366;
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 25px;
-            font-weight: bold;
-            font-size: 18px;
-            text-align: center;
+            background: #22c55e; color: white; text-align: center;
+            text-decoration: none; display: block; padding: 18px;
+            border-radius: 12px; font-weight: 800; margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<div class="cbt-container" id="portal-content">
+<div class="glass-card" id="main-card">
+    <div class="countdown-section" id="timer-grid">
+        <div class="timer-box">
+            <div class="timer-label">Reg. Deadline</div>
+            <div class="timer-val" id="deadline-timer">Loading...</div>
+        </div>
+        <div class="timer-box">
+            <div class="timer-label">Program Starts</div>
+            <div class="timer-val" id="event-timer">Loading...</div>
+        </div>
+    </div>
+
     <div id="intro-screen">
         <div class="header">
-            <div class="logo">D-MATHS</div>
-            <h2 style="margin-top:10px;">Entrance Assessment</h2>
-            <p style="color:#666;">Complete this to join the Main Group</p>
+            <div class="logo">D-MATHS<span>.</span></div>
+            <p style="color:#64748b; font-weight: 500; margin-top: 5px;">Diagnostic Assessment 2026</p>
         </div>
-        <input type="text" id="studentName" placeholder="Full Name" required>
-        <input type="email" id="studentEmail" placeholder="Email Address (Optional)">
-        <input type="tel" id="studentPhone" placeholder="WhatsApp Number" required>
+        <input type="text" id="studentName" placeholder="Enter Full Name">
+        <input type="tel" id="studentPhone" placeholder="WhatsApp Number">
         <button class="btn-primary" onclick="startQuiz()">START ASSESSMENT</button>
     </div>
 
     <div id="quiz-screen">
         <div class="timer-bar" id="timer">20:00</div>
         <div class="progress-container"><div class="progress-fill" id="pb"></div></div>
-        <p style="font-size: 14px; color: #666; margin-bottom: 15px; font-weight:bold" id="progress">Question 1 of 20</p>
         <div id="question-content"></div>
-        <div class="nav-btns">
-            <button class="btn-secondary" onclick="prevQ()">Back</button>
-            <button class="btn-nav" id="next-btn" onclick="nextQ()">Next</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button style="background:#e2e8f0; color:#64748b; flex:1" onclick="prevQ()">Back</button>
+            <button class="btn-primary" id="next-btn" style="flex:2" onclick="nextQ()">Next</button>
         </div>
     </div>
 
     <div id="result-screen" style="text-align: center;">
-        <h2 style="color: var(--deep-blue);">Assessment Submitted!</h2>
-        <div style="font-size: 65px; margin: 20px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
-        <p id="feedback" style="line-height: 1.6; margin-bottom: 20px; font-size: 17px;"></p>
-        
-        <div style="background: #f0f4f8; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-            <p><strong>Criteria Met:</strong> Thank you for participating. You are now invited to the main group.</p>
-        </div>
-        
-        <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">
-            🟢 ENTER MAIN GROUP NOW
-        </a>
+        <h2 style="font-size: 24px;">Assessment Complete!</h2>
+        <div style="font-size: 60px; margin: 20px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
+        <p id="feedback" style="color: #64748b; margin-bottom: 20px;"></p>
+        <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">JOIN MAIN GROUP</a>
     </div>
 </div>
 
 <script>
+    // --- TIMERS LOGIC ---
+    const regDeadline = new Date("Feb 3, 2026 23:00:00").getTime();
+    const eventStart = new Date("Feb 9, 2026 18:00:00").getTime();
+
+    function updateCountdowns() {
+        const now = new Date().getTime();
+        
+        function format(dist, id) {
+            if (dist < 0) return document.getElementById(id).innerText = "CLOSED";
+            const d = Math.floor(dist / (1000 * 60 * 60 * 24));
+            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((dist % (1000 * 60)) / 1000);
+            document.getElementById(id).innerText = `${d}d ${h}h ${m}m ${s}s`;
+        }
+        
+        format(regDeadline - now, "deadline-timer");
+        format(eventStart - now, "event-timer");
+    }
+    setInterval(updateCountdowns, 1000);
+
+    // --- QUIZ DATA & LOGIC ---
     const questions = [
-        { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
+       { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
+
         { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1 },
+
         { q: "Calculate the simple interest on ₦50,000 for 3 years at 5% per annum.", o: ["₦7,500", "₦5,000", "₦15,000", "₦2,500"], c: 0 },
+
         { q: "A bag contains 5 red and 7 blue balls. What is the probability of picking a red ball?", o: ["5/12", "7/12", "5/7", "1/5"], c: 0 },
+
         { q: "Find the median of the numbers: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0 },
+
         { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0 },
+
         { q: "A car travels 180km in 3 hours. Calculate its speed in m/s.", o: ["16.67 m/s", "60 m/s", "50 m/s", "20 m/s"], c: 0 },
+
         { q: "Factorize completely: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "(4x-9y)(4x+9y)", "2(x-y)²"], c: 0 },
+
         { q: "Calculate the area of a circle with a diameter of 14cm (Take π = 22/7).", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0 },
+
         { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0 },
+
         { q: "The sum of angles in a regular pentagon is:", o: ["540°", "360°", "720°", "180°"], c: 0 },
+
         { q: "Convert 25 to a binary number (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0 },
+
         { q: "If sin θ = 0.6, find cos θ (where θ is acute).", o: ["0.8", "0.4", "1.0", "0.5"], c: 0 },
+
         { q: "A discount of 15% was given on an item costing ₦2,000. How much was paid?", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0 },
+
         { q: "Find the 10th term of the Arithmetic Progression: 2, 5, 8, ...", o: ["29", "27", "31", "30"], c: 0 },
+
         { q: "The angle of elevation of a tower 30m high from a point on the ground 30m away is:", o: ["45°", "30°", "60°", "90°"], c: 0 },
+
         { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0 },
+
         { q: "If the mean of 3, 5, x, and 9 is 6, find x.", o: ["7", "6", "8", "4"], c: 0 },
+
         { q: "Solve the inequality: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0 },
+
         { q: "Calculate the volume of a cylinder with radius 3cm and height 7cm (π = 22/7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0 }
     ];
 
-    let currentIdx = 0;
-    let answers = new Array(questions.length).fill(null);
-    let time = 1200;
-    let timerInterval;
-
-    function checkPreviousAttempt() {
-        const hasSubmitted = localStorage.getItem('dmaths_submitted');
-        if (hasSubmitted) {
-            const oldScore = localStorage.getItem('dmaths_score');
-            document.getElementById('intro-screen').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('score-display').innerText = oldScore;
-            document.getElementById('feedback').innerText = "You have already completed this assessment. Re-attempts are not allowed.";
-            return true;
-        }
-        return false;
-    }
+    let currentIdx = 0, answers = [], time = 1200, timerInterval;
 
     function startQuiz() {
-        if (checkDeadline()) return;
-        if (checkPreviousAttempt()) return;
-
+        if(new Date().getTime() > regDeadline) return alert("Registration has ended!");
         const name = document.getElementById('studentName').value;
-        const phone = document.getElementById('studentPhone').value;
-        if(!name || !phone) return alert("Please enter your name and phone number.");
+        if(!name || !document.getElementById('studentPhone').value) return alert("Fields required!");
         
         document.getElementById('intro-screen').style.display = 'none';
+        document.getElementById('timer-grid').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         showQuestion();
         
         timerInterval = setInterval(() => {
             time--;
-            let m = Math.floor(time/60);
-            let s = time%60;
-            const tEl = document.getElementById('timer');
-            tEl.innerText = `${m}:${s < 10 ? '0'+s : s}`;
-            if(time < 300) tEl.style.background = "#e74c3c";
-            if(time <= 0) { clearInterval(timerInterval); finish(); }
+            let m = Math.floor(time/60), s = time%60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+            if(time <= 0) finish();
         }, 1000);
     }
 
     function showQuestion() {
         const q = questions[currentIdx];
-        document.getElementById('progress').innerText = `Question ${currentIdx + 1} of ${questions.length}`;
         document.getElementById('pb').style.width = ((currentIdx + 1) / questions.length) * 100 + "%";
-        let html = `<div class="question-text">${q.q}</div>`;
+        let html = `<p style="font-weight:700; margin-bottom:15px; color:#64748b">QUESTION ${currentIdx+1}</p>
+                    <div style="font-size:20px; font-weight:600; margin-bottom:20px;">${q.q}</div>`;
         q.o.forEach((opt, i) => {
             html += `<div class="option ${answers[currentIdx] === i ? 'selected' : ''}" onclick="pick(${i})">${opt}</div>`;
         });
         document.getElementById('question-content').innerHTML = html;
-        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "FINISH" : "Next";
+        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "SUBMIT" : "Next";
     }
 
     function pick(i) { answers[currentIdx] = i; showQuestion(); }
@@ -243,59 +247,16 @@
 
     function finish() {
         clearInterval(timerInterval);
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); // Celebration!
+        
         let score = 0;
-        let report = "";
+        questions.forEach((q, i) => { if(answers[i] === q.c) score++; });
         
-        questions.forEach((q, i) => { 
-            const isCorrect = answers[i] === q.c;
-            if(isCorrect) score++;
-            report += `Q${i+1}:${isCorrect ? '✅' : '❌'}|`; 
-        });
-        
-        const finalScore = `${score}/20`;
-        const name = document.getElementById('studentName').value;
-        const phone = document.getElementById('studentPhone').value;
-        const email = document.getElementById('studentEmail').value || "N/A";
-
-        // Lock Attempt
-        localStorage.setItem('dmaths_submitted', 'true');
-        localStorage.setItem('dmaths_score', finalScore);
-
-        // Submit to Google
-        const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
-        const formData = new FormData();
-        formData.append("entry.893693042", name);
-        formData.append("entry.1750619793", email);
-        formData.append("entry.820190378", phone);
-        formData.append("entry.685141788", finalScore);
-        formData.append("entry.365371422", report);
-
-        fetch(`https://docs.google.com/forms/d/e/${formID}/formResponse`, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData
-        });
-
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('score-display').innerText = finalScore;
-        document.getElementById('feedback').innerText = `Well done, ${name}! Your performance has been recorded. Click below to join the main training group.`;
+        document.getElementById('score-display').innerText = `${score}/${questions.length}`;
+        document.getElementById('feedback').innerText = `Excellent effort! Your results are saved. Join the group below.`;
     }
-
-    const deadlineTime = new Date(2026, 1, 3, 23, 0).getTime(); 
-    function checkDeadline() {
-        if (new Date().getTime() > deadlineTime) {
-            document.getElementById('portal-content').innerHTML = `<div style="text-align:center;padding:20px;"><h1>D-MATHS</h1><div style="font-size:60px;">⏳</div><h2>Portal Closed</h2><p>Assessment ended Feb 3rd.</p></div>`;
-            return true;
-        }
-        return false;
-    }
-
-    window.onload = function() {
-        if (!checkDeadline()) {
-            checkPreviousAttempt();
-        }
-    };
 </script>
 </body>
 </html>
