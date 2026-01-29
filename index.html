@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+       <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,13 +33,11 @@
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(22, 64, 123, 0.15);
             border-top: 10px solid var(--deep-blue);
-            transition: all 0.3s ease;
         }
 
         .header { text-align: center; margin-bottom: 25px; }
         .logo { color: var(--deep-blue); font-weight: 800; font-size: 28px; letter-spacing: 1px; }
         
-        /* Progress Bar */
         .progress-container {
             width: 100%;
             background: #eee;
@@ -64,10 +62,9 @@
             font-weight: bold;
             font-size: 20px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .question-text { font-size: 19px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: var(--deep-blue); }
+        .question-text { font-size: 19px; font-weight: 600; margin-bottom: 20px; color: var(--deep-blue); }
 
         .option {
             background: #f9f9f9;
@@ -76,17 +73,14 @@
             margin-bottom: 12px;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
+            transition: 0.2s;
         }
 
-        .option:hover { border-color: var(--vibrant-orange); background: #fffaf5; }
+        .option:hover { border-color: var(--vibrant-orange); }
         .option.selected { 
             border-color: var(--vibrant-orange); 
             background: var(--vibrant-orange); 
             color: white;
-            transform: scale(1.02);
         }
 
         .nav-btns { display: flex; justify-content: space-between; margin-top: 30px; gap: 10px; }
@@ -97,23 +91,18 @@
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
             font-size: 16px;
         }
 
         .btn-primary { background: var(--deep-blue); color: white; width: 100%; }
-        .btn-primary:active { transform: scale(0.98); }
         .btn-nav { background: var(--deep-blue); color: white; flex: 2; }
         .btn-secondary { background: #e2e8f0; color: #64748b; flex: 1; }
 
-        #result-screen, #quiz-screen { display: none; animation: fadeIn 0.5s ease; }
+        #result-screen, #quiz-screen { display: none; }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         input {
-            width: 100%; padding: 15px; margin: 12px 0; border: 2px solid #edf2f7; border-radius: 10px; font-size: 16px; outline: none;
+            width: 100%; padding: 15px; margin: 12px 0; border: 2px solid #edf2f7; border-radius: 10px; font-size: 16px;
         }
-        input:focus { border-color: var(--deep-blue); }
 
         .success-btn {
             background: #25D366;
@@ -125,18 +114,18 @@
             margin-top: 25px;
             font-weight: bold;
             font-size: 18px;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="cbt-container">
+<div class="cbt-container" id="portal-content">
     <div id="intro-screen">
         <div class="header">
             <div class="logo">D-MATHS</div>
             <h2 style="margin-top:10px;">Entrance Assessment</h2>
-            <p style="color:#666; margin-top:5px;">Complete this to join the Main Group</p>
+            <p style="color:#666;">Complete this to join the Main Group</p>
         </div>
         <input type="text" id="studentName" placeholder="Full Name" required>
         <input type="email" id="studentEmail" placeholder="Email Address (Optional)">
@@ -164,40 +153,43 @@
             <p><strong>Criteria Met:</strong> Thank you for participating. You are now invited to the main group.</p>
         </div>
         
-<a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">
-    🟢 ENTER MAIN GROUP NOW
-</a>
+        <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">
+            🟢 ENTER MAIN GROUP NOW
+        </a>
     </div>
 </div>
 
 <script>
     const questions = [
-    { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
-    { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 0 },
-    { q: "Calculate the simple interest on ₦50,000 for 3 years at 5% per annum.", o: ["₦7,500", "₦5,000", "₦15,000", "₦2,500"], c: 0 },
-    { q: "A bag contains 5 red and 7 blue balls. What is the probability of picking a red ball?", o: ["5/12", "7/12", "5/7", "1/5"], c: 0 },
-    { q: "Find the median of the numbers: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0 },
-    { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0 },
-    { q: "A car travels 180km in 3 hours. Calculate its speed in m/s.", o: ["16.67 m/s", "60 m/s", "50 m/s", "20 m/s"], c: 0 },
-    { q: "Factorize completely: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "(4x-9y)(4x+9y)", "2(x-y)²"], c: 0 },
-    { q: "Calculate the area of a circle with a diameter of 14cm (Take π = 22/7).", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0 },
-    { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0 },
-    { q: "The sum of angles in a regular pentagon is:", o: ["540°", "360°", "720°", "180°"], c: 0 },
-    { q: "Convert 25 to a binary number (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0 },
-    { q: "If sin θ = 0.6, find cos θ (where θ is acute).", o: ["0.8", "0.4", "1.0", "0.5"], c: 0 },
-    { q: "A discount of 15% was given on an item costing ₦2,000. How much was paid?", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0 },
-    { q: "Find the 10th term of the Arithmetic Progression: 2, 5, 8, ...", o: ["29", "27", "31", "30"], c: 0 },
-    { q: "The angle of elevation of a tower 30m high from a point on the ground 30m away is:", o: ["45°", "30°", "60°", "90°"], c: 0 },
-    { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0 },
-    { q: "If the mean of 3, 5, x, and 9 is 6, find x.", o: ["7", "6", "8", "4"], c: 0 },
-    { q: "Solve the inequality: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0 },
-    { q: "Calculate the volume of a cylinder with radius 3cm and height 7cm (π = 22/7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0 }
-];
+        { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
+        { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1 },
+        { q: "Calculate the simple interest on ₦50,000 for 3 years at 5% per annum.", o: ["₦7,500", "₦5,000", "₦15,000", "₦2,500"], c: 0 },
+        { q: "A bag contains 5 red and 7 blue balls. What is the probability of picking a red ball?", o: ["5/12", "7/12", "5/7", "1/5"], c: 0 },
+        { q: "Find the median of the numbers: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0 },
+        { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0 },
+        { q: "A car travels 180km in 3 hours. Calculate its speed in m/s.", o: ["16.67 m/s", "60 m/s", "50 m/s", "20 m/s"], c: 0 },
+        { q: "Factorize completely: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "(4x-9y)(4x+9y)", "2(x-y)²"], c: 0 },
+        { q: "Calculate the area of a circle with a diameter of 14cm (Take π = 22/7).", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0 },
+        { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0 },
+        { q: "The sum of angles in a regular pentagon is:", o: ["540°", "360°", "720°", "180°"], c: 0 },
+        { q: "Convert 25 to a binary number (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0 },
+        { q: "If sin θ = 0.6, find cos θ (where θ is acute).", o: ["0.8", "0.4", "1.0", "0.5"], c: 0 },
+        { q: "A discount of 15% was given on an item costing ₦2,000. How much was paid?", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0 },
+        { q: "Find the 10th term of the Arithmetic Progression: 2, 5, 8, ...", o: ["29", "27", "31", "30"], c: 0 },
+        { q: "The angle of elevation of a tower 30m high from a point on the ground 30m away is:", o: ["45°", "30°", "60°", "90°"], c: 0 },
+        { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0 },
+        { q: "If the mean of 3, 5, x, and 9 is 6, find x.", o: ["7", "6", "8", "4"], c: 0 },
+        { q: "Solve the inequality: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0 },
+        { q: "Calculate the volume of a cylinder with radius 3cm and height 7cm (π = 22/7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0 }
+    ];
+
     let currentIdx = 0;
     let answers = new Array(questions.length).fill(null);
     let time = 1200;
+    let timerInterval;
 
     function startQuiz() {
+        if (checkDeadline()) return;
         const name = document.getElementById('studentName').value;
         const phone = document.getElementById('studentPhone').value;
         if(!name || !phone) return alert("Please enter your name and phone number.");
@@ -206,13 +198,13 @@
         document.getElementById('quiz-screen').style.display = 'block';
         showQuestion();
         
-        const timerInterval = setInterval(() => {
+        timerInterval = setInterval(() => {
             time--;
             let m = Math.floor(time/60);
             let s = time%60;
             const tEl = document.getElementById('timer');
             tEl.innerText = `${m}:${s < 10 ? '0'+s : s}`;
-            if(time < 300) tEl.style.background = "#e74c3c"; // Turn red at 5 mins
+            if(time < 300) tEl.style.background = "#e74c3c";
             if(time <= 0) { clearInterval(timerInterval); finish(); }
         }, 1000);
     }
@@ -251,70 +243,66 @@
         }
     }
 
-function finish() {
-    let score = 0;
-    let report = ""; // This will store the breakdown
+    function finish() {
+        clearInterval(timerInterval);
+        let score = 0;
+        let report = "";
 
-    questions.forEach((q, i) => { 
-        const isCorrect = answers[i] === q.c;
-        if(isCorrect) score++;
+        questions.forEach((q, i) => { 
+            const isCorrect = answers[i] === q.c;
+            if(isCorrect) score++;
+            report += `Q${i+1}:${isCorrect ? '✅' : '❌'}|`; 
+        });
         
-        // Creates a string like: Q1:Correct, Q2:Wrong, Q3:Correct...
-        report += `Q${i+1}:${isCorrect ? '✅' : '❌'}|`; 
-    });
-    
-    const name = document.getElementById('studentName').value;
-    const phone = document.getElementById('studentPhone').value;
-    const finalScore = `${score}/20`;
+        const name = document.getElementById('studentName').value;
+        const phone = document.getElementById('studentPhone').value;
+        const email = document.getElementById('studentEmail').value || "N/A";
+        const finalScore = `${score}/20`;
 
-    // CONFIGURATION
-    // CONFIGURATION - Extracted from your pre-filled link
-const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
-const nameE = "entry.893693042";    // For NAME
-const emailE = "entry.1750619793";  // For EMAIL
-const phoneE = "entry.820190378";   // For PHONE
-const scoreE = "entry.685141788";   // For SCORE
-const reportE = "entry.365371422";  // For REPORTS (Weakness/Missed Questions)
+        // GOOGLE FORM SUBMISSION
+        const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
+        const formData = new FormData();
+        formData.append("entry.893693042", name);
+        formData.append("entry.1750619793", email);
+        formData.append("entry.820190378", phone);
+        formData.append("entry.685141788", finalScore);
+        formData.append("entry.365371422", report);
 
-    const googleURL = `https://docs.google.com/forms/d/e/${formID}/formResponse?${nameE}=${encodeURIComponent(name)}&${phoneE}=${encodeURIComponent(phone)}&${scoreE}=${encodeURIComponent(finalScore)}&${reportE}=${encodeURIComponent(report)}&submit=Submit`;
+        fetch(`https://docs.google.com/forms/d/e/${formID}/formResponse`, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        });
 
-    const ping = new Image();
-    ping.src = googleURL;
-
-    // Show results...
-}
-
- // SET THE DEADLINE: Year, Month (0=Jan, 1=Feb), Day, Hour, Minute
-const deadline = new Date(2026, 1, 3, 23, 0).getTime(); 
-
-function checkDeadline() {
-    const now = new Date().getTime();
-    
-    if (now > deadline) {
-        // Change the entire screen to a "Closed" message
-        document.body.innerHTML = `
-            <div style="text-align: center; padding: 50px; font-family: sans-serif;">
-                <h1 style="color: #16407B;">D-MATHS</h1>
-                <div style="font-size: 80px;">⏳</div>
-                <h2 style="color: #F38118;">Portal Closed</h2>
-                <p style="font-size: 18px; color: #2c3e50;">
-                    The Diagnostic Assessment ended on Feb 3rd at 11:00 PM.<br>
-                    If you missed it, please contact the admin for further instructions.
-                </p>
-                <a href="https://wa.me/YOUR_PHONE_NUMBER" style="color: #16407B; font-weight: bold;">Contact Admin</a>
-            </div>
-        `;
-        return true;
+        // UI UPDATE - Transition to result screen
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('score-display').innerText = finalScore;
+        document.getElementById('feedback').innerText = `Well done, ${name}! Your performance has been recorded. Click below to join the main training group.`;
     }
-    return false;
-}
 
-// Run the check as soon as the page loads
-window.onload = function() {
-    checkDeadline();
-};
+    // DEADLINE: Feb 3rd, 2026, 11:00 PM (Month is 1 for Feb)
+    const deadlineTime = new Date(2026, 1, 3, 23, 0).getTime(); 
+
+    function checkDeadline() {
+        const now = new Date().getTime();
+        if (now > deadlineTime) {
+            document.getElementById('portal-content').innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h1 style="color: #16407B;">D-MATHS</h1>
+                    <div style="font-size: 60px; margin: 20px;">⏳</div>
+                    <h2 style="color: #F38118;">Portal Closed</h2>
+                    <p style="font-size: 16px; color: #666; margin-bottom: 20px;">
+                        The Diagnostic Assessment ended on Feb 3rd at 11:00 PM.
+                    </p>
+                    <a href="https://wa.me/2348000000000" style="color: #16407B; font-weight: bold; text-decoration:none;">Contact Admin</a>
+                </div>`;
+            return true;
+        }
+        return false;
+    }
+
+    window.onload = checkDeadline;
 </script>
 </body>
 </html>
-
-     
