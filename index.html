@@ -289,6 +289,36 @@
         const fb = document.getElementById('feedback');
         fb.innerText = "Excellent effort! Regardless of your score, the D-MATHS team is ready to guide you to success.";
     }
+
+ // SET THE DEADLINE: Year, Month (0=Jan, 1=Feb), Day, Hour, Minute
+const deadline = new Date(2026, 1, 3, 23, 0).getTime(); 
+
+function checkDeadline() {
+    const now = new Date().getTime();
+    
+    if (now > deadline) {
+        // Change the entire screen to a "Closed" message
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+                <h1 style="color: #16407B;">D-MATHS</h1>
+                <div style="font-size: 80px;">⏳</div>
+                <h2 style="color: #F38118;">Portal Closed</h2>
+                <p style="font-size: 18px; color: #2c3e50;">
+                    The Diagnostic Assessment ended on Feb 3rd at 11:00 PM.<br>
+                    If you missed it, please contact the admin for further instructions.
+                </p>
+                <a href="https://wa.me/YOUR_PHONE_NUMBER" style="color: #16407B; font-weight: bold;">Contact Admin</a>
+            </div>
+        `;
+        return true;
+    }
+    return false;
+}
+
+// Run the check as soon as the page loads
+window.onload = function() {
+    checkDeadline();
+};
 </script>
 </body>
 </html>
