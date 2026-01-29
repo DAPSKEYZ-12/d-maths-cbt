@@ -1,5 +1,4 @@
-                     
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +26,6 @@
             padding: 20px;
         }
 
-        /* Glassmorphism Container */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -35,36 +33,41 @@
             width: 100%;
             max-width: 550px;
             border-radius: 24px;
-            padding: 40px;
+            padding: 30px 40px 40px 40px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
         }
 
-        /* Countdown Grid */
+        /* PERSISTENT HEADER STYLE */
+        .persistent-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 28px; font-weight: 900; color: var(--deep-blue); letter-spacing: -1px; }
+        .logo span { color: var(--vibrant-orange); }
+        .slogan { font-size: 10px; font-weight: 700; color: #94a3b8; letter-spacing: 2px; text-transform: uppercase; }
+
         .countdown-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .timer-box {
             background: #f1f5f9;
-            padding: 15px;
+            padding: 12px;
             border-radius: 12px;
             text-align: center;
             border: 1px solid #e2e8f0;
         }
 
-        .timer-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
-        .timer-val { font-size: 16px; font-weight: 700; color: var(--accent-blue); font-variant-numeric: tabular-nums; }
+        .timer-label { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 3px; }
+        .timer-val { font-size: 14px; font-weight: 700; color: var(--accent-blue); }
 
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { font-size: 32px; font-weight: 900; color: var(--deep-blue); letter-spacing: -1px; }
-        .logo span { color: var(--vibrant-orange); }
-
-        /* Input Styling */
         input {
             width: 100%; padding: 16px; margin-bottom: 12px;
             border: 2px solid #e2e8f0; border-radius: 12px;
@@ -72,20 +75,18 @@
         }
         input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
 
-        /* Progress & Options */
         .timer-bar { background: var(--deep-blue); color: white; padding: 12px; border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 20px; }
         .progress-container { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--vibrant-orange); width: 0%; transition: 0.4s; }
 
         .option {
-            background: white; border: 2px solid #e2e8f0; padding: 18px;
-            margin-bottom: 12px; border-radius: 14px; cursor: pointer;
+            background: white; border: 2px solid #e2e8f0; padding: 16px;
+            margin-bottom: 10px; border-radius: 14px; cursor: pointer;
             font-weight: 500; transition: 0.2s;
         }
         .option:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
         .option.selected { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
 
-        /* Buttons */
         button {
             width: 100%; padding: 16px; border: none; border-radius: 12px;
             font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
@@ -93,18 +94,25 @@
         .btn-primary { background: var(--accent-blue); color: white; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
         .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
         
-        #result-screen, #quiz-screen { display: none; }
+        #result-screen, #quiz-screen, #already-submitted { display: none; }
 
         .success-btn {
             background: #22c55e; color: white; text-align: center;
             text-decoration: none; display: block; padding: 18px;
             border-radius: 12px; font-weight: 800; margin-top: 20px;
         }
+        
+        .alert-box { background: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <div class="glass-card" id="main-card">
+    <div class="persistent-header">
+        <div class="logo">D-MATHS<span>.</span></div>
+        <div class="slogan">Logic. Code. Future.</div>
+    </div>
+
     <div class="countdown-section" id="timer-grid">
         <div class="timer-box">
             <div class="timer-label">Reg. Deadline</div>
@@ -117,13 +125,18 @@
     </div>
 
     <div id="intro-screen">
-        <div class="header">
-            <div class="logo">D-MATHS<span>.</span></div>
-            <p style="color:#64748b; font-weight: 500; margin-top: 5px;">Diagnostic Assessment 2026</p>
-        </div>
+        <p style="text-align:center; color:#64748b; font-weight: 600; margin-bottom: 20px;">Diagnostic Assessment 2026</p>
         <input type="text" id="studentName" placeholder="Enter Full Name">
         <input type="tel" id="studentPhone" placeholder="WhatsApp Number">
         <button class="btn-primary" onclick="startQuiz()">START ASSESSMENT</button>
+    </div>
+
+    <div id="already-submitted" style="text-align: center;">
+        <div class="alert-box">
+            <h2 style="font-size: 18px;">Submitted Already</h2>
+            <p style="font-size: 13px; margin-top: 8px;">Our records show this device or phone number has already completed the assessment.</p>
+        </div>
+        <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">JOIN MAIN GROUP</a>
     </div>
 
     <div id="quiz-screen">
@@ -137,85 +150,81 @@
     </div>
 
     <div id="result-screen" style="text-align: center;">
-        <h2 style="font-size: 24px;">Assessment Complete!</h2>
-        <div style="font-size: 60px; margin: 20px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
-        <p id="feedback" style="color: #64748b; margin-bottom: 20px;"></p>
+        <h2 style="font-size: 22px;">Assessment Complete!</h2>
+        <div style="font-size: 55px; margin: 15px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
+        <p id="feedback" style="color: #64748b; margin-bottom: 20px; font-size: 14px;"></p>
         <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">JOIN MAIN GROUP</a>
     </div>
 </div>
 
 <script>
-    // --- TIMERS LOGIC ---
+    // --- TIMERS ---
     const regDeadline = new Date("Feb 3, 2026 23:00:00").getTime();
     const eventStart = new Date("Feb 9, 2026 18:00:00").getTime();
 
-    function updateCountdowns() {
+    setInterval(() => {
         const now = new Date().getTime();
-        
-        function format(dist, id) {
-            if (dist < 0) return document.getElementById(id).innerText = "CLOSED";
+        const format = (dist, id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (dist < 0) return el.innerText = "CLOSED";
             const d = Math.floor(dist / (1000 * 60 * 60 * 24));
             const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((dist % (1000 * 60)) / 1000);
-            document.getElementById(id).innerText = `${d}d ${h}h ${m}m ${s}s`;
-        }
-        
+            el.innerText = `${d}d ${h}h ${m}m ${s}s`;
+        };
         format(regDeadline - now, "deadline-timer");
         format(eventStart - now, "event-timer");
+    }, 1000);
+
+    // --- SECURITY ---
+    function checkSubmissionStatus(phone) {
+        if (localStorage.getItem('dmaths_done') === 'true') return true;
+        let usedNumbers = JSON.parse(localStorage.getItem('dmaths_numbers') || "[]");
+        if (usedNumbers.includes(phone.trim())) return true;
+        return false;
     }
-    setInterval(updateCountdowns, 1000);
 
-    // --- QUIZ DATA & LOGIC ---
+    // --- QUIZ DATA ---
     const questions = [
-       { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
-
+        { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
         { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1 },
-
         { q: "Calculate the simple interest on ₦50,000 for 3 years at 5% per annum.", o: ["₦7,500", "₦5,000", "₦15,000", "₦2,500"], c: 0 },
-
         { q: "A bag contains 5 red and 7 blue balls. What is the probability of picking a red ball?", o: ["5/12", "7/12", "5/7", "1/5"], c: 0 },
-
         { q: "Find the median of the numbers: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0 },
-
         { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0 },
-
         { q: "A car travels 180km in 3 hours. Calculate its speed in m/s.", o: ["16.67 m/s", "60 m/s", "50 m/s", "20 m/s"], c: 0 },
-
         { q: "Factorize completely: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "(4x-9y)(4x+9y)", "2(x-y)²"], c: 0 },
-
         { q: "Calculate the area of a circle with a diameter of 14cm (Take π = 22/7).", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0 },
-
         { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0 },
-
         { q: "The sum of angles in a regular pentagon is:", o: ["540°", "360°", "720°", "180°"], c: 0 },
-
         { q: "Convert 25 to a binary number (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0 },
-
         { q: "If sin θ = 0.6, find cos θ (where θ is acute).", o: ["0.8", "0.4", "1.0", "0.5"], c: 0 },
-
         { q: "A discount of 15% was given on an item costing ₦2,000. How much was paid?", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0 },
-
         { q: "Find the 10th term of the Arithmetic Progression: 2, 5, 8, ...", o: ["29", "27", "31", "30"], c: 0 },
-
         { q: "The angle of elevation of a tower 30m high from a point on the ground 30m away is:", o: ["45°", "30°", "60°", "90°"], c: 0 },
-
         { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0 },
-
         { q: "If the mean of 3, 5, x, and 9 is 6, find x.", o: ["7", "6", "8", "4"], c: 0 },
-
         { q: "Solve the inequality: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0 },
-
         { q: "Calculate the volume of a cylinder with radius 3cm and height 7cm (π = 22/7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0 }
     ];
 
-    let currentIdx = 0, answers = [], time = 1200, timerInterval;
+    let currentIdx = 0, answers = [], time = 1200, timerInterval, userPhone = "";
 
     function startQuiz() {
-        if(new Date().getTime() > regDeadline) return alert("Registration has ended!");
+        const phone = document.getElementById('studentPhone').value;
         const name = document.getElementById('studentName').value;
-        if(!name || !document.getElementById('studentPhone').value) return alert("Fields required!");
-        
+        if(!name || !phone) return alert("Fields required!");
+
+        if (checkSubmissionStatus(phone)) {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('timer-grid').style.display = 'none';
+            document.getElementById('already-submitted').style.display = 'block';
+            return;
+        }
+
+        userPhone = phone;
         document.getElementById('intro-screen').style.display = 'none';
         document.getElementById('timer-grid').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
@@ -232,13 +241,13 @@
     function showQuestion() {
         const q = questions[currentIdx];
         document.getElementById('pb').style.width = ((currentIdx + 1) / questions.length) * 100 + "%";
-        let html = `<p style="font-weight:700; margin-bottom:15px; color:#64748b">QUESTION ${currentIdx+1}</p>
-                    <div style="font-size:20px; font-weight:600; margin-bottom:20px;">${q.q}</div>`;
+        let html = `<p style="font-weight:700; margin-bottom:12px; color:#64748b; font-size:12px;">QUESTION ${currentIdx+1} OF ${questions.length}</p>
+                    <div style="font-size:19px; font-weight:600; margin-bottom:20px; line-height:1.4;">${q.q}</div>`;
         q.o.forEach((opt, i) => {
             html += `<div class="option ${answers[currentIdx] === i ? 'selected' : ''}" onclick="pick(${i})">${opt}</div>`;
         });
         document.getElementById('question-content').innerHTML = html;
-        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "SUBMIT" : "Next";
+        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "FINISH TEST" : "Next Question";
     }
 
     function pick(i) { answers[currentIdx] = i; showQuestion(); }
@@ -247,7 +256,12 @@
 
     function finish() {
         clearInterval(timerInterval);
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); // Celebration!
+        localStorage.setItem('dmaths_done', 'true');
+        let usedNumbers = JSON.parse(localStorage.getItem('dmaths_numbers') || "[]");
+        usedNumbers.push(userPhone);
+        localStorage.setItem('dmaths_numbers', JSON.stringify(usedNumbers));
+
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
         
         let score = 0;
         questions.forEach((q, i) => { if(answers[i] === q.c) score++; });
@@ -255,7 +269,7 @@
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
         document.getElementById('score-display').innerText = `${score}/${questions.length}`;
-        document.getElementById('feedback').innerText = `Excellent effort! Your results are saved. Join the group below.`;
+        document.getElementById('feedback').innerText = `Excellent effort! Your results have been logged for the 2026 program.`;
     }
 </script>
 </body>
