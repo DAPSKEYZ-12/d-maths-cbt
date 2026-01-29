@@ -159,7 +159,8 @@
     </div>
 </div>
 
-<script>
+         <script>
+    // 1. DATA AND QUESTIONS
     const questions = [
         { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
         { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1 },
@@ -188,8 +189,24 @@
     let time = 1200;
     let timerInterval;
 
+    // 2. DUPLICATE CHECKER (LocalStorage)
+    function checkPreviousAttempt() {
+        const hasSubmitted = localStorage.getItem('dmaths_submitted');
+        if (hasSubmitted) {
+            const oldScore = localStorage.getItem('dmaths_score');
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            document.getElementById('score-display').innerText = oldScore;
+            document.getElementById('feedback').innerText = "You have already completed this assessment. Re-attempts are not allowed.";
+            return true;
+        }
+        return false;
+    }
+
     function startQuiz() {
         if (checkDeadline()) return;
+        if (checkPreviousAttempt()) return;
+
         const name = document.getElementById('studentName').value;
         const phone = document.getElementById('studentPhone').value;
         if(!name || !phone) return alert("Please enter your name and phone number.");
@@ -209,11 +226,11 @@
         }, 1000);
     }
 
+    // Standard show, pick, and navigation functions
     function showQuestion() {
         const q = questions[currentIdx];
         document.getElementById('progress').innerText = `Question ${currentIdx + 1} of ${questions.length}`;
         document.getElementById('pb').style.width = ((currentIdx + 1) / questions.length) * 100 + "%";
-        
         let html = `<div class="question-text">${q.q}</div>`;
         q.o.forEach((opt, i) => {
             html += `<div class="option ${answers[currentIdx] === i ? 'selected' : ''}" onclick="pick(${i})">${opt}</div>`;
@@ -222,44 +239,38 @@
         document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "FINISH" : "Next";
     }
 
-    function pick(i) {
-        answers[currentIdx] = i;
-        showQuestion();
-    }
+    function pick(i) { answers[currentIdx] = i; showQuestion(); }
+    function nextQ() { if(currentIdx < questions.length - 1) { currentIdx++; showQuestion(); } else { finish(); } }
+    function prevQ() { if(currentIdx > 0) { currentIdx--; showQuestion(); } }
 
-    function nextQ() {
-        if(currentIdx < questions.length - 1) {
-            currentIdx++;
-            showQuestion();
-        } else {
-            finish();
-        }
-    }
-
-    function prevQ() {
-        if(currentIdx > 0) {
-            currentIdx--;
-            showQuestion();
-        }
-    }
-
+    // 3. UPDATED FINISH FUNCTION
     function finish() {
         clearInterval(timerInterval);
         let score = 0;
         let report = "";
-
         questions.forEach((q, i) => { 
             const isCorrect = answers[i] === q.c;
             if(isCorrect) score++;
             report += `Q${i+1}:${isCorrect ? '✅' : '❌'}|`; 
-        });
+                          // Inside the finish() function
+               localStorage.setItem('dmaths_submitted', 'true');
+               localStorage.setItem('dmaths_score', finalScore);
+                });
         
+        const finalScore = `${score}/20`;
+
+        // Save locally to block future attempts
+        localStorage.setItem('dmaths_submitted', 'true');
+        localStorage.setItem('dmaths_score', finalScore);
+
         const name = document.getElementById('studentName').value;
         const phone = document.getElementById('studentPhone').value;
         const email = document.getElementById('studentEmail').value || "N/A";
-        const finalScore = `${score}/20`;
 
-        // GOOGLE FORM SUBMISSION
+        // Send to Google Forms
+        const formID = "1F
+
+        // Send to Google Forms
         const formID = "1FAIpQLSe2hALwzIgB_hsFPVxmXdekRm1kn280V6XsE2YNXlQwSM7azA"; 
         const formData = new FormData();
         formData.append("entry.893693042", name);
@@ -274,35 +285,27 @@
             body: formData
         });
 
-        // UI UPDATE - Transition to result screen
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
         document.getElementById('score-display').innerText = finalScore;
         document.getElementById('feedback').innerText = `Well done, ${name}! Your performance has been recorded. Click below to join the main training group.`;
     }
 
-    // DEADLINE: Feb 3rd, 2026, 11:00 PM (Month is 1 for Feb)
+    // 4. DEADLINE AND LOAD CHECK
     const deadlineTime = new Date(2026, 1, 3, 23, 0).getTime(); 
-
     function checkDeadline() {
-        const now = new Date().getTime();
-        if (now > deadlineTime) {
-            document.getElementById('portal-content').innerHTML = `
-                <div style="text-align: center; padding: 20px;">
-                    <h1 style="color: #16407B;">D-MATHS</h1>
-                    <div style="font-size: 60px; margin: 20px;">⏳</div>
-                    <h2 style="color: #F38118;">Portal Closed</h2>
-                    <p style="font-size: 16px; color: #666; margin-bottom: 20px;">
-                        The Diagnostic Assessment ended on Feb 3rd at 11:00 PM.
-                    </p>
-                    <a href="https://wa.me/2348000000000" style="color: #16407B; font-weight: bold; text-decoration:none;">Contact Admin</a>
-                </div>`;
+        if (new Date().getTime() > deadlineTime) {
+            document.getElementById('portal-content').innerHTML = `<div style="text-align:center;padding:20px;"><h1>D-MATHS</h1><div style="font-size:60px;">⏳</div><h2>Portal Closed</h2><p>Assessment ended Feb 3rd.</p></div>`;
             return true;
         }
         return false;
     }
 
-    window.onload = checkDeadline;
-</script>
+    window.onload = function() {
+        if (!checkDeadline()) {
+            checkPreviousAttempt();
+        }
+    };
+                           </script>
 </body>
 </html>
