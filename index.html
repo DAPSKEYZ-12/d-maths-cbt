@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D-MATHS | Logic. Code. Future.</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --deep-blue: #0f172a;
@@ -36,7 +37,6 @@
             padding: 30px 40px 40px 40px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
-            overflow: hidden;
         }
 
         .persistent-header {
@@ -72,7 +72,7 @@
             border: 2px solid #e2e8f0; border-radius: 12px;
             font-size: 16px; transition: 0.3s;
         }
-        input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        input:focus { outline: none; border-color: var(--accent-blue); }
 
         .timer-bar { background: var(--deep-blue); color: white; padding: 12px; border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 20px; }
         .progress-container { height: 8px; background: #e2e8f0; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
@@ -83,128 +83,112 @@
             margin-bottom: 10px; border-radius: 14px; cursor: pointer;
             font-weight: 500; transition: 0.2s;
         }
-        .option:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
         .option.selected { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
 
         button {
             width: 100%; padding: 16px; border: none; border-radius: 12px;
             font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s;
         }
-        .btn-primary { background: var(--accent-blue); color: white; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-primary { background: var(--accent-blue); color: white; }
         
         #result-screen, #quiz-screen { display: none; }
+
+        /* ANALYSIS STYLES */
+        .analysis-box { margin: 20px 0; text-align: left; background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .analysis-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
+        .status-tag { padding: 2px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; }
+        .good { background: #dcfce7; color: #166534; }
+        .bad { background: #fee2e2; color: #991b1b; }
 
         .success-btn {
             background: #22c55e; color: white; text-align: center;
             text-decoration: none; display: block; padding: 18px;
-            border-radius: 12px; font-weight: 800; margin-top: 20px;
+            border-radius: 12px; font-weight: 800; margin-top: 10px;
         }
+        .pdf-btn { background: #64748b; color: white; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="glass-card" id="main-card">
-    <div class="persistent-header">
-        <div class="logo">D-MATHS<span>.</span></div>
-        <div class="slogan">Logic. Code. Future.</div>
-    </div>
-
-    <div class="countdown-section" id="timer-grid">
-        <div class="timer-box">
-            <div class="timer-label">Reg. Deadline</div>
-            <div class="timer-val" id="deadline-timer">Loading...</div>
+    <div id="pdf-content">
+        <div class="persistent-header">
+            <div class="logo">D-MATHS<span>.</span></div>
+            <div class="slogan">Logic. Code. Future.</div>
         </div>
-        <div class="timer-box">
-            <div class="timer-label">Program Starts</div>
-            <div class="timer-val" id="event-timer">Loading...</div>
+
+        <div class="countdown-section" id="timer-grid">
+            <div class="timer-box"><div class="timer-label">Reg. Deadline</div><div class="timer-val" id="deadline-timer">Loading...</div></div>
+            <div class="timer-box"><div class="timer-label">Program Starts</div><div class="timer-val" id="event-timer">Loading...</div></div>
         </div>
-    </div>
 
-    <div id="intro-screen">
-        <p style="text-align:center; color:#64748b; font-weight: 600; margin-bottom: 20px;">Diagnostic Assessment 2026</p>
-        <input type="text" id="studentName" placeholder="Enter Full Name">
-        <input type="tel" id="studentPhone" placeholder="WhatsApp Number">
-        <button class="btn-primary" onclick="startQuiz()">START ASSESSMENT</button>
-    </div>
-
-    <div id="quiz-screen">
-        <div class="timer-bar" id="timer">20:00</div>
-        <div class="progress-container"><div class="progress-fill" id="pb"></div></div>
-        <div id="question-content"></div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button style="background:#e2e8f0; color:#64748b; flex:1" onclick="prevQ()">Back</button>
-            <button class="btn-primary" id="next-btn" style="flex:2" onclick="nextQ()">Next</button>
+        <div id="intro-screen">
+            <p style="text-align:center; color:#64748b; font-weight: 600; margin-bottom: 20px;">Diagnostic Assessment 2026</p>
+            <input type="text" id="studentName" placeholder="Enter Full Name">
+            <input type="tel" id="studentPhone" placeholder="WhatsApp Number">
+            <button class="btn-primary" onclick="startQuiz()">START ASSESSMENT</button>
         </div>
-    </div>
 
-    <div id="result-screen" style="text-align: center;">
-        <h2 style="font-size: 22px;">Assessment Complete!</h2>
-        <div style="font-size: 55px; margin: 15px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
-        <p id="feedback" style="color: #64748b; margin-bottom: 20px; font-size: 14px;"></p>
-        <button class="btn-primary" onclick="location.reload()" style="margin-bottom: 10px;">RETAKE TEST</button>
+        <div id="quiz-screen">
+            <div class="timer-bar" id="timer">20:00</div>
+            <div class="progress-container"><div class="progress-fill" id="pb"></div></div>
+            <div id="question-content"></div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button style="background:#e2e8f0; color:#64748b; flex:1" onclick="prevQ()">Back</button>
+                <button class="btn-primary" id="next-btn" style="flex:2" onclick="nextQ()">Next</button>
+            </div>
+        </div>
+
+        <div id="result-screen" style="text-align: center;">
+            <h2 style="font-size: 20px;">Assessment Report</h2>
+            <p id="print-name" style="font-weight: bold; color: var(--accent-blue);"></p>
+            <div style="font-size: 45px; margin: 10px 0; font-weight: 900; color: var(--vibrant-orange);" id="score-display">0/20</div>
+            
+            <div class="analysis-box" id="analysis-content">
+                </div>
+
+            <p id="feedback" style="color: #64748b; margin-bottom: 15px; font-size: 13px;"></p>
+        </div>
+    </div> <div id="action-buttons" style="display:none;">
+        <button class="pdf-btn" onclick="downloadPDF()">📩 DOWNLOAD SLIP (PDF)</button>
         <a href="https://chat.whatsapp.com/KIVZ7JfaLroFCObJkSHvEd" target="_blank" class="success-btn">JOIN MAIN GROUP</a>
+        <button style="background:none; color:#64748b; font-size: 12px; margin-top: 15px;" onclick="location.reload()">Retake Assessment</button>
     </div>
 </div>
 
 <script>
-    // --- TIMERS ---
-    const regDeadline = new Date("Feb 3, 2026 23:00:00").getTime();
-    const eventStart = new Date("Feb 9, 2026 18:00:00").getTime();
-
-    setInterval(() => {
-        const now = new Date().getTime();
-        const format = (dist, id) => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (dist < 0) return el.innerText = "CLOSED";
-            const d = Math.floor(dist / (1000 * 60 * 60 * 24));
-            const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((dist % (1000 * 60)) / 1000);
-            el.innerText = `${d}d ${h}h ${m}m ${s}s`;
-        };
-        format(regDeadline - now, "deadline-timer");
-        format(eventStart - now, "event-timer");
-    }, 1000);
-
-    // --- QUIZ DATA ---
+    // Categories: 0: Arithmetic, 1: Algebra, 2: Geometry/Trig
     const questions = [
-        { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0 },
-        { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1 },
-        { q: "Calculate the simple interest on ₦50,000 for 3 years at 5% per annum.", o: ["₦7,500", "₦5,000", "₦15,000", "₦2,500"], c: 0 },
-        { q: "A bag contains 5 red and 7 blue balls. What is the probability of picking a red ball?", o: ["5/12", "7/12", "5/7", "1/5"], c: 0 },
-        { q: "Find the median of the numbers: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0 },
-        { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0 },
-        { q: "A car travels 180km in 3 hours. Calculate its speed in m/s.", o: ["16.67 m/s", "60 m/s", "50 m/s", "20 m/s"], c: 0 },
-        { q: "Factorize completely: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "(4x-9y)(4x+9y)", "2(x-y)²"], c: 0 },
-        { q: "Calculate the area of a circle with a diameter of 14cm (Take π = 22/7).", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0 },
-        { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0 },
-        { q: "The sum of angles in a regular pentagon is:", o: ["540°", "360°", "720°", "180°"], c: 0 },
-        { q: "Convert 25 to a binary number (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0 },
-        { q: "If sin θ = 0.6, find cos θ (where θ is acute).", o: ["0.8", "0.4", "1.0", "0.5"], c: 0 },
-        { q: "A discount of 15% was given on an item costing ₦2,000. How much was paid?", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0 },
-        { q: "Find the 10th term of the Arithmetic Progression: 2, 5, 8, ...", o: ["29", "27", "31", "30"], c: 0 },
-        { q: "The angle of elevation of a tower 30m high from a point on the ground 30m away is:", o: ["45°", "30°", "60°", "90°"], c: 0 },
-        { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0 },
-        { q: "If the mean of 3, 5, x, and 9 is 6, find x.", o: ["7", "6", "8", "4"], c: 0 },
-        { q: "Solve the inequality: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0 },
-        { q: "Calculate the volume of a cylinder with radius 3cm and height 7cm (π = 22/7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0 }
+        { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0, cat: 0 },
+        { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1, cat: 1 },
+        { q: "Calculate simple interest on ₦50k, 3yrs, 5%.", o: ["₦7.5k", "₦5k", "₦15k", "₦2.5k"], c: 0, cat: 0 },
+        { q: "Probability of picking a red ball from 5 red/7 blue.", o: ["5/12", "7/12", "5/7", "1/5"], c: 0, cat: 0 },
+        { q: "Find median of: 2, 8, 5, 12, 10", o: ["8", "5", "10", "7.4"], c: 0, cat: 0 },
+        { q: "Simplify: √(98) - √(50)", o: ["2√2", "4√2", "8√2", "√48"], c: 0, cat: 0 },
+        { q: "Car travels 180km in 3h. Speed in m/s?", o: ["16.67", "60", "50", "20"], c: 0, cat: 0 },
+        { q: "Factorize: 4x² - 9y²", o: ["(2x-3y)(2x+3y)", "(2x-3y)²", "Diff of squares", "2(x-y)²"], c: 0, cat: 1 },
+        { q: "Area of circle with diameter 14cm.", o: ["154cm²", "616cm²", "44cm²", "77cm²"], c: 0, cat: 2 },
+        { q: "Solve for x: 3(x - 2) = 2(x + 5)", o: ["16", "4", "7", "10"], c: 0, cat: 1 },
+        { q: "Sum of angles in a regular pentagon.", o: ["540°", "360°", "720°", "180°"], c: 0, cat: 2 },
+        { q: "Convert 25 to binary (Base 2).", o: ["11001", "10101", "11100", "11011"], c: 0, cat: 0 },
+        { q: "If sin θ = 0.6, find cos θ.", o: ["0.8", "0.4", "1.0", "0.5"], c: 0, cat: 2 },
+        { q: "Discount of 15% on ₦2,000 item.", o: ["₦1,700", "₦1,850", "₦300", "₦1,500"], c: 0, cat: 0 },
+        { q: "10th term of AP: 2, 5, 8...", o: ["29", "27", "31", "30"], c: 0, cat: 1 },
+        { q: "Angle of elevation of 30m tower from 30m away.", o: ["45°", "30°", "60°", "90°"], c: 0, cat: 2 },
+        { q: "Simplify: (a³)² ÷ a⁴", o: ["a²", "a¹⁰", "a", "a⁴"], c: 0, cat: 1 },
+        { q: "Mean of 3, 5, x, 9 is 6. Find x.", o: ["7", "6", "8", "4"], c: 0, cat: 0 },
+        { q: "Solve: 2x - 5 < 7", o: ["x < 6", "x > 6", "x < 1", "x > 1"], c: 0, cat: 1 },
+        { q: "Volume of cylinder (r=3, h=7).", o: ["198cm³", "66cm³", "132cm³", "44cm³"], c: 0, cat: 2 }
     ];
 
     let currentIdx = 0, answers = [], time = 1200, timerInterval;
 
     function startQuiz() {
-        const phone = document.getElementById('studentPhone').value;
-        const name = document.getElementById('studentName').value;
-        if(!name || !phone) return alert("Fields required!");
-
-        // RESTRICTION REMOVED: Students can start as many times as they want.
+        if(!document.getElementById('studentName').value || !document.getElementById('studentPhone').value) return alert("All fields required!");
         document.getElementById('intro-screen').style.display = 'none';
         document.getElementById('timer-grid').style.display = 'none';
         document.getElementById('quiz-screen').style.display = 'block';
         showQuestion();
-        
         timerInterval = setInterval(() => {
             time--;
             let m = Math.floor(time/60), s = time%60;
@@ -216,13 +200,11 @@
     function showQuestion() {
         const q = questions[currentIdx];
         document.getElementById('pb').style.width = ((currentIdx + 1) / questions.length) * 100 + "%";
-        let html = `<p style="font-weight:700; margin-bottom:12px; color:#64748b; font-size:12px;">QUESTION ${currentIdx+1} OF ${questions.length}</p>
-                    <div style="font-size:19px; font-weight:600; margin-bottom:20px; line-height:1.4;">${q.q}</div>`;
-        q.o.forEach((opt, i) => {
-            html += `<div class="option ${answers[currentIdx] === i ? 'selected' : ''}" onclick="pick(${i})">${opt}</div>`;
-        });
+        let html = `<p style="font-weight:700; margin-bottom:12px; color:#64748b; font-size:12px;">QUESTION ${currentIdx+1}</p>
+                    <div style="font-size:18px; font-weight:600; margin-bottom:20px;">${q.q}</div>`;
+        q.o.forEach((opt, i) => { html += `<div class="option ${answers[currentIdx] === i ? 'selected' : ''}" onclick="pick(${i})">${opt}</div>`; });
         document.getElementById('question-content').innerHTML = html;
-        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "FINISH TEST" : "Next Question";
+        document.getElementById('next-btn').innerText = currentIdx === questions.length - 1 ? "FINISH" : "Next";
     }
 
     function pick(i) { answers[currentIdx] = i; showQuestion(); }
@@ -231,17 +213,49 @@
 
     function finish() {
         clearInterval(timerInterval);
-        
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
-        
+        const name = document.getElementById('studentName').value;
+        const stats = { 0: {correct: 0, total: 0}, 1: {correct: 0, total: 0}, 2: {correct: 0, total: 0} };
         let score = 0;
-        questions.forEach((q, i) => { if(answers[i] === q.c) score++; });
-        
+
+        questions.forEach((q, i) => {
+            stats[q.cat].total++;
+            if(answers[i] === q.c) { score++; stats[q.cat].correct++; }
+        });
+
         document.getElementById('quiz-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
-        document.getElementById('score-display').innerText = `${score}/${questions.length}`;
-        document.getElementById('feedback').innerText = `Excellent effort! Your results have been logged for the 2026 program.`;
+        document.getElementById('action-buttons').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score}/20`;
+        document.getElementById('print-name').innerText = name.toUpperCase();
+
+        const analysisHtml = `
+            <div class="analysis-item"><span>Arithmetic/Numbers:</span> <span>${stats[0].correct}/${stats[0].total} <b class="status-tag ${stats[0].correct > 5 ? 'good' : 'bad'}">${stats[0].correct > 5 ? 'Strong' : 'Weak'}</b></span></div>
+            <div class="analysis-item"><span>Algebraic Logic:</span> <span>${stats[1].correct}/${stats[1].total} <b class="status-tag ${stats[1].correct > 3 ? 'good' : 'bad'}">${stats[1].correct > 3 ? 'Strong' : 'Weak'}</b></span></div>
+            <div class="analysis-item"><span>Geometry & Shape:</span> <span>${stats[2].correct}/${stats[2].total} <b class="status-tag ${stats[2].correct > 3 ? 'good' : 'bad'}">${stats[2].correct > 3 ? 'Strong' : 'Weak'}</b></span></div>
+        `;
+        document.getElementById('analysis-content').innerHTML = analysisHtml;
+        document.getElementById('feedback').innerText = score > 15 ? "You are ready for Success Hacks!" : "You need the Logic Hacks training to boost your speed and accuracy.";
+        confetti({ particleCount: 150, spread: 60 });
     }
+
+    function downloadPDF() {
+        const element = document.getElementById('pdf-content');
+        const opt = { margin: 0.5, filename: 'D-MATHS_Result.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // Timer format logic
+    const regDeadline = new Date("Feb 3, 2026 23:00:00").getTime();
+    const eventStart = new Date("Feb 9, 2026 18:00:00").getTime();
+    setInterval(() => {
+        const now = new Date().getTime();
+        const format = (dist, id) => {
+            const d = Math.floor(dist / (86400000)), h = Math.floor((dist % 86400000) / 3600000), m = Math.floor((dist % 3600000) / 60000), s = Math.floor((dist % 60000) / 1000);
+            document.getElementById(id).innerText = dist < 0 ? "CLOSED" : `${d}d ${h}h ${m}m ${s}s`;
+        };
+        format(regDeadline - now, "deadline-timer");
+        format(eventStart - now, "event-timer");
+    }, 1000);
 </script>
 </body>
 </html>
