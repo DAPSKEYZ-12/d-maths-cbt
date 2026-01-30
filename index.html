@@ -36,10 +36,8 @@
             padding: 30px 40px 40px 40px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
-            overflow: hidden;
         }
 
-        /* PERSISTENT HEADER STYLE */
         .persistent-header {
             text-align: center;
             margin-bottom: 25px;
@@ -103,9 +101,18 @@
         }
         
         .alert-box { background: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+
+        /* DEV ONLY RESET BUTTON */
+        .dev-reset {
+            position: fixed; bottom: 10px; right: 10px; 
+            padding: 5px 10px; font-size: 10px; background: rgba(0,0,0,0.5); 
+            color: white; border-radius: 5px; cursor: pointer; border: none;
+        }
     </style>
 </head>
 <body>
+
+<button class="dev-reset" onclick="localStorage.clear(); location.reload();">DEV: Clear History</button>
 
 <div class="glass-card" id="main-card">
     <div class="persistent-header">
@@ -178,11 +185,17 @@
         format(eventStart - now, "event-timer");
     }, 1000);
 
-    // --- SECURITY ---
+    // --- UPDATED SECURITY CHECK ---
     function checkSubmissionStatus(phone) {
-        if (localStorage.getItem('dmaths_done') === 'true') return true;
-        let usedNumbers = JSON.parse(localStorage.getItem('dmaths_numbers') || "[]");
-        if (usedNumbers.includes(phone.trim())) return true;
+        try {
+            // Check global flag
+            if (localStorage.getItem('dmaths_done') === 'true') return true;
+            
+            // Check specific phone numbers
+            const used = localStorage.getItem('dmaths_numbers');
+            let usedNumbers = used ? JSON.parse(used) : [];
+            if (usedNumbers.includes(phone.trim())) return true;
+        } catch(e) { console.log("Storage error"); }
         return false;
     }
 
@@ -213,10 +226,18 @@
     let currentIdx = 0, answers = [], time = 1200, timerInterval, userPhone = "";
 
     function startQuiz() {
-        const phone = document.getElementById('studentPhone').value;
-        const name = document.getElementById('studentName').value;
-        if(!name || !phone) return alert("Fields required!");
+        const phoneInput = document.getElementById('studentPhone');
+        const nameInput = document.getElementById('studentName');
+        
+        const phone = phoneInput.value.trim();
+        const name = nameInput.value.trim();
 
+        if(!name || !phone) {
+            alert("Please enter both your name and phone number.");
+            return;
+        }
+
+        // Logic Check: Only lock out if they successfully FINISHED before
         if (checkSubmissionStatus(phone)) {
             document.getElementById('intro-screen').style.display = 'none';
             document.getElementById('timer-grid').style.display = 'none';
@@ -256,10 +277,16 @@
 
     function finish() {
         clearInterval(timerInterval);
-        localStorage.setItem('dmaths_done', 'true');
-        let usedNumbers = JSON.parse(localStorage.getItem('dmaths_numbers') || "[]");
-        usedNumbers.push(userPhone);
-        localStorage.setItem('dmaths_numbers', JSON.stringify(usedNumbers));
+        
+        try {
+            localStorage.setItem('dmaths_done', 'true');
+            let used = localStorage.getItem('dmaths_numbers');
+            let usedNumbers = used ? JSON.parse(used) : [];
+            if(!usedNumbers.includes(userPhone)) {
+                usedNumbers.push(userPhone);
+                localStorage.setItem('dmaths_numbers', JSON.stringify(usedNumbers));
+            }
+        } catch(e) { console.log("Storage failed"); }
 
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
         
@@ -274,3 +301,4 @@
 </script>
 </body>
 </html>
+
