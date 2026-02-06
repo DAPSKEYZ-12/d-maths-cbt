@@ -157,7 +157,7 @@
     </div>
 </div>
 
-<script>
+<<script>
     const questions = [
         { q: "Simplify: (1/4 + 1/3) ÷ (1/3 - 1/4)", o: ["7", "1/7", "12", "7/12"], c: 0, cat: 0 },
         { q: "If 2x + 3 = 11, find the value of (x - 2)²", o: ["4", "9", "16", "25"], c: 1, cat: 1 },
@@ -182,16 +182,26 @@
     ];
 
     let currentIdx = 0, answers = [], time = 1200, timerInterval;
-    const regDeadline = new Date("Feb 3, 2026 23:00:00").getTime();
+    
+    // Portal Control Variables
+    const portalOpen = new Date("Feb 6, 2026 17:00:00").getTime(); // Today 5:00 PM
+    const regDeadline = new Date("Feb 7, 2026 05:00:00").getTime(); // Tomorrow 5:00 AM
     const eventStart = new Date("Feb 9, 2026 18:00:00").getTime();
 
     function startQuiz() {
         const now = new Date().getTime();
+        
+        // Gatekeeper Logic
+        if (now < portalOpen) {
+            alert("The Portal opens by 5:00 PM today. Please check back then!");
+            return;
+        }
         if (now > regDeadline) {
-            alert("Registration has closed at 11:00 PM.");
+            alert("Registration closed at 5:00 AM today.");
             location.reload();
             return;
         }
+
         if(!document.getElementById('studentName').value || !document.getElementById('studentPhone').value) return alert("All fields required!");
         
         document.getElementById('intro-screen').style.display = 'none';
@@ -254,11 +264,18 @@
         html2pdf().set(opt).from(element).save();
     }
 
-    // Timer format logic & Hard Closure
     setInterval(() => {
         const now = new Date().getTime();
         
-        // Deadline Timer Logic
+        if (now < portalOpen) {
+            const distWait = portalOpen - now;
+            const h = Math.floor((distWait % 86400000) / 3600000), m = Math.floor((distWait % 3600000) / 60000), s = Math.floor((distWait % 60000) / 1000);
+            document.getElementById("deadline-timer").innerText = "OPENS IN " + h + "h " + m + "m";
+            document.getElementById("start-btn").innerText = "PORTAL OPENS AT 5PM";
+            document.getElementById("start-btn").disabled = true;
+            return;
+        }
+
         const dist = regDeadline - now;
         if (dist < 0) {
             document.getElementById("deadline-timer").innerText = "CLOSED";
@@ -268,11 +285,12 @@
             document.getElementById("sub-msg").innerText = "This assessment is no longer accepting responses.";
             document.getElementById("sub-msg").style.color = "#ef4444";
         } else {
-            const d = Math.floor(dist / (86400000)), h = Math.floor((dist % 86400000) / 3600000), m = Math.floor((dist % 3600000) / 60000), s = Math.floor((dist % 60000) / 1000);
+            document.getElementById("start-btn").disabled = false;
+            document.getElementById("start-btn").innerText = "START ASSESSMENT";
+            const h = Math.floor((dist % 86400000) / 3600000), m = Math.floor((dist % 3600000) / 60000), s = Math.floor((dist % 60000) / 1000);
             document.getElementById("deadline-timer").innerText = `${h}h ${m}m ${s}s`;
         }
 
-        // Event Start Timer
         const distEvent = eventStart - now;
         const ed = Math.floor(distEvent / (86400000)), eh = Math.floor((distEvent % 86400000) / 3600000), em = Math.floor((distEvent % 3600000) / 60000), es = Math.floor((distEvent % 60000) / 1000);
         document.getElementById("event-timer").innerText = distEvent < 0 ? "LIVE" : `${ed}d ${eh}h ${em}m`;
